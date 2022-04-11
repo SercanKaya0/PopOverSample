@@ -43,7 +43,6 @@ extension ViewController {
             popOverbutton.widthAnchor.constraint(equalToConstant: 200),
             popOverbutton.heightAnchor.constraint(equalToConstant: 50)
         ])
-
     }
 }
 
@@ -52,12 +51,24 @@ extension ViewController {
     
     @objc
     func popOverButtonTapped(_ sender: UIButton) {
-        PopOverHelper.shared.showMenu(inViewController: self, sender: sender, arrowDirection: .any)
+        PopOverHelper.shared.showMenu(inViewController: self, sender: sender, arrowDirection: .any, delegate: self)
     }
 }
 
 // MARK: - Delegates
-extension ViewController: UIPopoverPresentationControllerDelegate {
+extension ViewController: UIPopoverPresentationControllerDelegate, PopOverMenuViewControllerDelegate {
+    
+    func didSelectDelegate(type: PopOverMenuType) {
+        switch type {
+        case .delete:
+            print("delete")
+        case .share:
+            print("share")
+        case .edit:
+            print("edit")
+        }
+    }
+    
     func adaptivePresentationStyle(for controller: UIPresentationController,
                                     traitCollection: UITraitCollection) -> UIModalPresentationStyle {
          return .none

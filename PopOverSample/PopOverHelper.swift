@@ -15,21 +15,15 @@ final class PopOverHelper {
     static var shared = PopOverHelper()
 
     func showMenu(inViewController: PresentedPopOverViewController,
-                  sender: UIButton, arrowDirection: UIPopoverArrowDirection = .up) {
+                  sender: UIButton, arrowDirection: UIPopoverArrowDirection = .up, delegate: PopOverMenuViewControllerDelegate) {
         
-        // PopOver olarak göstereceğimiz ekranı belirliyoruz.
           let viewController = PopOverMenuViewController()
-        // Bu ekranın nasıl açılacağını belirtiyoruz.
+        viewController.delegate = delegate
           viewController.modalPresentationStyle = .popover
-        // Açılacak Ekran için bir size belirtmemiz gerekmektedir.
           viewController.preferredContentSize = .init(width: 240, height: 135)
           let presentationController = viewController.popoverPresentationController
-        // presentationController bizden bir delegate beklemektedir.
           presentationController?.delegate = inViewController
-        // Burada popOverın açılış yönünü belirtiyoruz. Hep aşağı doğru açılsın diyebiliriz.
-          presentationController?.permittedArrowDirections = arrowDirection
-        //  Bu PopOver açılacağı yeri anlaması işin bir kaynak vermemiz gerekmektedir.
-        // Bunu da button target kısmında yakalıacağız
+        presentationController?.permittedArrowDirections = .up
           presentationController?.sourceView = sender
           presentationController?.sourceRect = sender.bounds
           inViewController.present(viewController, animated: true, completion: nil)

@@ -7,19 +7,26 @@
 
 import UIKit
 
+public protocol PopOverMenuViewControllerDelegate: AnyObject {
+    func didSelectDelegate(type: PopOverMenuType)
+}
+
 final class PopOverMenuViewController: UIViewController {
 
+    weak var delegate: PopOverMenuViewControllerDelegate?
+    
     private let tableView: UITableView = {
        let tableView = UITableView()
         tableView.register(PopOverMenuTableViewCell.self, forCellReuseIdentifier: PopOverMenuTableViewCell.cellid)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.isScrollEnabled = false
         tableView.backgroundColor = .clear
+        tableView.contentInsetAdjustmentBehavior = .always
         tableView.showsVerticalScrollIndicator = false
         return tableView
     }()
     
-    let cellItem: [PopOverMenuModel] = [PopOverMenuModel(title: "Edit", image: UIImage(systemName: "pencil")), PopOverMenuModel(title: "Delete", image: UIImage(systemName: "trash")),PopOverMenuModel(title: "Share", image: UIImage(systemName: "arrowshape.turn.up.right.fill"))]
+    let cellItem: [PopOverMenuModel] = [PopOverMenuModel(title: "Edit", image: UIImage(systemName: "pencil"), type: .edit), PopOverMenuModel(title: "Delete", image: UIImage(systemName: "trash"), type: .delete),PopOverMenuModel(title: "Share", image: UIImage(systemName: "arrowshape.turn.up.right.fill"), type: .share)]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,11 +46,11 @@ extension PopOverMenuViewController {
     
     private func addTableView() {
         view.addSubview(tableView)
-        NSLayoutConstraint.activate([
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            NSLayoutConstraint.activate([
+                tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             tableView.topAnchor.constraint(equalTo: view.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+                tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
     }
 }
@@ -68,5 +75,8 @@ extension PopOverMenuViewController: UITableViewDataSource {
         return cell
     }
     
-    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        dismiss(animated: false, completion: nil)
+        delegate?.didSelectDelegate(type: cellItem[indexPath.row].type)
+    }
 }
